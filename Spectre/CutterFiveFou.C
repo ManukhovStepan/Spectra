@@ -178,8 +178,8 @@ if (cent9 > -1)
 //    hSpectraVsEta2D->Fill(picoTrack->pMom().Eta(), picoTrack->pMom().Pt(), Yields);
 //    hSpectraVsNFitP2D->Fill(picoTrack->nHitsFit(), picoTrack->pMom().Pt(), Yields);
 
-         //  if(picoTrack->isPrimary())  
-    if(   	 (abs(event->primaryVertex().Z())<30.) 	&&
+    if(   	 (picoTrack->isPrimary())    &&
+            (abs(event->primaryVertex().Z())<30.) 	&&
             (rV<0.25)                      &&
             (abs(picoTrack->pMom().Eta())<0.5) &&
             (picoTrack->gDCA(event->primaryVertex()).Mag()<1.) &&
