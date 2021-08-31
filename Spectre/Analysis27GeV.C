@@ -24,7 +24,7 @@ const Char_t *defaultOutFile="27GeV_spectra.root";
 
 using namespace std;
 
-int Analysis27GeV(const Char_t *inFile = "star/data01/pwg/manukhov/27GeV/*.picoDst.root",   const Char_t *outFileName=defaultOutFile)
+int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.picoDst.root",   const Char_t *outFileName=defaultOutFile)
 {
 
 // Open input and output files --------------------------------------------------------------------------------
@@ -65,25 +65,25 @@ int Analysis27GeV(const Char_t *inFile = "star/data01/pwg/manukhov/27GeV/*.picoD
 	TH1D *hNegSpectra[9];
 
 // Defining histograms ----------------------------------------------------------------------------------------
-	hNoCutVertexZ 		= new TH1D("Vertex Z","Vertex Z destribution",20, -50., 50.);
-	hNoCutVertexXY 		= new TH2D("Vertex XY","Vertex XY destribution",40, -0.5, 0.5, 40, -0.5, 0.5);
-	hNoCutRefMult		= new TH1D("RefMult","Reference multiplicity destribution", 60, 0., 500.);
-	hNoCutNFitPoints	= new TH1D("nFitPoints", "Number of fit points destribution", 50, 0., 50.);
-	hNoCutNFitPtOverPossPt	= new TH1D("nFitPtOverPossPt", "Number of fit points over the number of possible fit points destribution", 50, 0., 1.1);
-	hNoCutNFitdEdx		= new TH1D("hNFitdEdx", "Number of dE/dx points destribution", 50, 0., 50.);
-	hNoCutDCAz		= new TH1D("hDCAz", "DCA Z destribution", 50, -1.5, 1.5);
-	hNoCutDCAxy		= new TH2D("hDCAxy", "DCA XY destribution", 50, -5, 5, 50, -5, 5);
-	hNoCutDCAmagn		= new TH1D("hDCAmagn", "DCA magnitude destribution", 50, 0.,2);
+	hNoCutVertexZ 		= new TH1D("hNoCutVertexZ","Vertex Z destribution, no cuts",20, -50., 50.);
+	hNoCutVertexXY 		= new TH2D("hNoCutVertexXY","Vertex XY destribution, no cuts",40, -0.5, 0.5, 40, -0.5, 0.5);
+	hNoCutRefMult		= new TH1D("hNoCutRefMult","Reference multiplicity destribution, no cuts", 60, 0., 500.);
+	hNoCutNFitPoints	= new TH1D("hNoCutFitPoints", "Number of fit points destribution, no cuts", 50, 0., 50.);
+	hNoCutNFitPtOverPossPt	= new TH1D("hNoCutFitPtOverPossPt", "Number of fit points over the number of possible fit points destribution, no cuts", 50, 0., 1.1);
+	hNoCutNFitdEdx		= new TH1D("hNoCutNFitdEdx", "Number of dE/dx points destribution, no cuts", 50, 0., 50.);
+	hNoCutDCAz		= new TH1D("hNoCutDCAz", "DCA Z destribution, no cuts", 50, -1.5, 1.5);
+	hNoCutDCAxy		= new TH2D("hNoCutDCAxy", "DCA XY destribution, no cuts", 50, -5, 5, 50, -5, 5);
+	hNoCutDCAmagn		= new TH1D("hNoCutDCAmagn", "DCA magnitude destribution, no cuts", 50, 0.,2);
 
-	hCutVertexZ 		= new TH1D("Vertex Z","Vertex Z destribution",20, -50., 50.);
-	hCutVertexXY 		= new TH2D("Vertex XY","Vertex XY destribution",40, -0.5, 0.5, 40, -0.5, 0.5);
-	hCutRefMult		= new TH1D("RefMult","Reference multiplicity destribution", 60, 0., 500.);
-	hCutNFitPoints		= new TH1D("nFitPoints", "Number of fit points destribution", 50, 0., 50.);
-	hCutNFitPtOverPossPt	= new TH1D("nFitPtOverPossPt", "Number of fit points over the number of possible fit points destribution", 50, 0., 1.1);
-	hCutNFitdEdx		= new TH1D("hNFitdEdx", "Number of dE/dx points destribution", 50, 0., 50.);
-	hCutDCAz		= new TH1D("hDCAz", "DCA Z destribution", 50, -1.5, 1.5);
-	hCutDCAxy		= new TH2D("hDCAxy", "DCA XY destribution", 50, -5, 5, 50, -5, 5);
-	hCutDCAmagn		= new TH1D("hDCAmagn", "DCA magnitude destribution", 50, 0.,2);
+	hCutVertexZ 		= new TH1D("hCutVertexZ","Vertex Z destribution, with cuts",20, -50., 50.);
+	hCutVertexXY 		= new TH2D("hCutVertexXY","Vertex XY destribution, with cuts",40, -0.5, 0.5, 40, -0.5, 0.5);
+	hCutRefMult		= new TH1D("hCutRefMult","Reference multiplicity destribution, with cuts", 60, 0., 500.);
+	hCutNFitPoints		= new TH1D("hCutFitPoints", "Number of fit points destribution, with cuts", 50, 0., 50.);
+	hCutNFitPtOverPossPt	= new TH1D("hCutFitPtOverPossPt", "Number of fit points over the number of possible fit points destribution, with cuts", 50, 0., 1.1);
+	hCutNFitdEdx		= new TH1D("hCutNFitdEdx", "Number of dE/dx points destribution, with cuts", 50, 0., 50.);
+	hCutDCAz		= new TH1D("hCutDCAz", "DCA Z destribution, with cuts", 50, -1.5, 1.5);
+	hCutDCAxy		= new TH2D("hCutDCAxy", "DCA XY destribution, with cuts", 50, -5, 5, 50, -5, 5);
+	hCutDCAmagn		= new TH1D("hCutDCAmagn", "DCA magnitude destribution, with cuts", 50, 0.,2);
 
 	for(Int_t i = 0; i < 9; i++)
 	{
@@ -137,11 +137,18 @@ int Analysis27GeV(const Char_t *inFile = "star/data01/pwg/manukhov/27GeV/*.picoD
 
 // Reading by events ------------------------------------------------------------------------------------------
 	Long64_t events2read = picoReader->chain()->GetEntries();
+	//if (events2read > 5000) events2read = 5000;
 	for(Long64_t iEvent=0; iEvent<events2read; iEvent++) {
 		cout << "Working on event #[" << (iEvent+1) << "/" << events2read << "]" << "\r";
 		Bool_t readEvent = picoReader->readPicoEvent(iEvent);
 		StPicoDst *dst = picoReader->picoDst();
 		StPicoEvent *event = dst->event();
+		if(	!event->isTrigger(610001)		&&
+			!event->isTrigger(610011)		&&
+			!event->isTrigger(610021)		&&
+			!event->isTrigger(610031)		&&
+			!event->isTrigger(610041)		&&
+			!event->isTrigger(610051)		) continue; 
 
 		runid = event->runId();
 		RefMult = event->refMult();
@@ -182,7 +189,7 @@ int Analysis27GeV(const Char_t *inFile = "star/data01/pwg/manukhov/27GeV/*.picoD
 
 // Filling histograms before track cuts -----------------------------------------------------------------------
 			hNoCutNFitPoints->Fill(picoTrack->nHitsFit());
-			hNoCutNFitPtOverPossPt->Fill((Double_t)nFitPOver);
+			hNoCutNFitPtOverPossPt->Fill((Double_t)nHitsOverPoss);
 			hNoCutNFitdEdx->Fill(picoTrack->nHitsDedx());
 			hNoCutDCAz->Fill(picoTrack->gDCA(event->primaryVertex()).Z());
 			hNoCutDCAxy->Fill(picoTrack->gDCA(event->primaryVertex()).X(), picoTrack->gDCA(event->primaryVertex()).Y());
@@ -199,7 +206,7 @@ int Analysis27GeV(const Char_t *inFile = "star/data01/pwg/manukhov/27GeV/*.picoD
 
 // Filling histograms after track cuts ------------------------------------------------------------------------
 			hCutNFitPoints->Fill(picoTrack->nHitsFit());
-			hCutNFitPtOverPossPt->Fill((Double_t)nFitPOver);
+			hCutNFitPtOverPossPt->Fill((Double_t)nHitsOverPoss);
 			hCutNFitdEdx->Fill(picoTrack->nHitsDedx());
 			hCutDCAz->Fill(picoTrack->gDCA(event->primaryVertex()).Z());
 			hCutDCAxy->Fill(picoTrack->gDCA(event->primaryVertex()).X(), picoTrack->gDCA(event->primaryVertex()).Y());
@@ -270,4 +277,5 @@ int Analysis27GeV(const Char_t *inFile = "star/data01/pwg/manukhov/27GeV/*.picoD
 	picoReader->Finish();
 	return 0;
 }
+
 
