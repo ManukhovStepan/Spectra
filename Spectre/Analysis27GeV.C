@@ -213,8 +213,16 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 			hCutDCAmagn->Fill(picoTrack->gDCA(event->primaryVertex()).Mag());
 
 // Filling pT spectra -----------------------------------------------------------------------------------------
-			dEta = 1;
-			dPt = (hPosSpectra[0]->GetBinCenter(hPosSpectra[0]->GetNbinsX()) - hPosSpectra[0]->GetBinCenter(0)) / hPosSpectra[0]->GetNbinsX();
+			Int_t binPt = 0;
+			for(Int_t i = 0; i < NumBins - 1; i++)
+			{
+				if 	((picoTrack ->pMom().Pt() >= hPosSpectra[cent9]->GetBinLowEdge(i)) 	&&
+					 (picoTrack ->pMom().Pt() <= hPosSpectra[cent9]->GetBinLowEdge(i+1))  )
+				binPt = i;
+				break;
+			}
+			dPt = hPosSpectra[cent9]->GetBinWidth(binPt);
+			dEta = 1;			
 			if(picoTrack->charge()>0) {
 				posYields = 1./((2.*3.14159) *(picoTrack ->pMom().Pt())*dPt*dEta);
 				hPosSpectra[cent9]-> Fill(picoTrack ->pMom().Pt(), posYields);
@@ -277,5 +285,4 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 	picoReader->Finish();
 	return 0;
 }
-
 
