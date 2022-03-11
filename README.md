@@ -59,7 +59,7 @@ hadd 27GeV_total.root *.root
 
 (II) https://github.com/ManukhovStepan/Spectra/blob/main/Plotting/RCP_divide_method.cpp
 1) Открывается файл и достаются гистограммы hPos60_80, hNeg60_80, hPos0_5, hNeg0_5, hNormCent9
-Из последней достается количество событий в классе центральности 0-5 и 60-80:
+Из последней достается количество событий в классах центральности 0-5 и 60-80:
 Double_t NEvent0_5 = hCent9->GetBinContent(10);
 Double_t NEvent60_80 = hCent9->GetBinContent(2) + hCent9->GetBinContent(3);
 2) Производится нормировка гистограмм Pos60_80, hNeg60_80, hPos0_5, hNeg0_5 на эти числа.
@@ -72,7 +72,7 @@ Double_t NEvent60_80 = hCent9->GetBinContent(2) + hCent9->GetBinContent(3);
 TH1D *hPosRCP;
 hPosRCP = (TH1D*)hPos0_5->Clone("PosRCP");
 hPosRCP->Divide(hPos60_80);
-(аналогично для отрицательных_
+(аналогично для отрицательных)
 4) Производится нормировка на <Ncoll>
 5) Отрисовка. Код поддерживает две способа работы
 - Первый способ (mode ==1) отрисовывает на одном канвасе  две гистограммы
