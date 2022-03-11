@@ -3,7 +3,6 @@ Spectra of Au+Au collisions, RCP
 Мой код состоит из двух этапов:
 (I) - код построения спектров, обрабатываемый на ферме
 (II) - код построения RCP, производящийся локально
-Оба кода сейчас лежат на гите
 
 (I) https://github.com/ManukhovStepan/Spectra/blob/main/Spectre/Analysis27GeV.C
 Схема работы
