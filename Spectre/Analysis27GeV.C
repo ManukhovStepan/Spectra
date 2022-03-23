@@ -63,7 +63,8 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 	TH2D *hNoCutGlobalPtOverPrimPt;
 	
 	TH1D *hNormCent9;
-	TH1D *hCharge;
+	TH1D *hCharge[9];
+	TString hCharge_names[9];
 	
 	TH1D *hCutVertexZ;
 	TH2D *hCutVertexXY;
@@ -103,7 +104,6 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 	hNoCutGlobalPtOverPrimPt= new TH2D("hNoCutGlobalPtOverPrimPt", "Global pT over primary pT, no cuts", 100, 0., 10., 100, 0., 10.);
 	
 	hNormCent9 		= new TH1D("hNormCent9", "Centrality distribution", 11, -1., 9.);
-	hCharge			= new TH1D("hCharge","Charge distribution", 3, -1., 2.);
 	
 	hCutVertexZ 		= new TH1D("hCutVertexZ","Vertex Z distribution, with cuts",100, -50., 50.);
 	hCutVertexXY 		= new TH2D("hCutVertexXY","Vertex XY distribution, with cuts",400, -2.4, 2.4, 400, -2.4, 2.4);
@@ -125,6 +125,10 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 		hNeg_names[i] 	= "hNegSpectra_";
 		hNeg_names[i]  += i;
 		hNegSpectra[i] 		= new TH1D(hNeg_names[i],"Neg d^{2}N/2piP_{T}dP_{T}deta distribution",NumBins, 0.01, 9.);
+		hCharge_names[i]= "hCharge_";
+		hCharge_names[i]+= i;
+		hCharge[i]		= new TH1D(hCharge_names[i],"Charge distribution", 3, -1., 2.);
+		
 	};
 	const Int_t NBINS = 59;
 	Double_t edges[NBINS + 1] = {0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9, 1.95, 2.0, 2.1, 2.2, 2.3, 2.4, 2.6, 2.8, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0};
@@ -135,7 +139,7 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 		hPosSpectraRebin[i] 		= new TH1D(hPos_names[i],"Pos d^{2}N/2piP_{T}dP_{T}deta distribution (uneaven bins)",NBINS, edges);
 		hNeg_names[i] 	= "hNegSpectraRebin_";
 		hNeg_names[i]  += i;
-		hNegSpectraRebin[i] 		= new TH1D(hNeg_names[i],"Neg d^{2}N/2piP_{T}dP_{T}deta distribution (uneaven bins)",NBINS, edges);
+		hNegSpectraRebin[i] 		= new TH1D(hNeg_names[i],"Neg d^{2}N/2piP_{T}dP_{T}deta distribution (uneaven bins)",NBINS, edges);		
 	};
 	
 	hPos60_80 = new TH1D("hPos60_80", "Pos d^{2}N/2piP_{T}dP_{T}deta distribution", NBINS, edges);
@@ -276,18 +280,19 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 			hCutGlobalPtOverPrimPt->Fill(picoTrack->gMom().Pt(), picoTrack->pMom().Pt());
 // Filling pT spectra -----------------------------------------------------------------------------------------
 			dEta = 1;
-			// dPt = (pT_max-pT_min)/NumBins
+			// dPt = (pT_max-pT_min)/NumBins  -  for eaven bins
 			dPt = (hPosSpectra[0]->GetBinCenter(hPosSpectra[0]->GetNbinsX()) - hPosSpectra[0]->GetBinCenter(0)) / hPosSpectra[0]->GetNbinsX();
 			if(picoTrack->charge()>0) {
 				posYields = CentWeight* 1./((2.*3.14159) *(picoTrack->pMom().Pt())*dPt*dEta);
 				hPosSpectra[cent9]-> Fill(picoTrack->pMom().Pt(), posYields);
-				if((cent9<2) || (cent9==8)) { hCharge->Fill(picoTrack->charge()); }
+				hCharge[cent9]->Fill(picoTrack->charge()); 
 			}
 			if(picoTrack->charge()<0) {
 				negYields = CentWeight* 1./((2.*3.14159) *(picoTrack->pMom().Pt())*dPt*dEta);
 				hNegSpectra[cent9]-> Fill(picoTrack->pMom().Pt(), negYields);
-				if((cent9<2) || (cent9==8)) { hCharge->Fill(picoTrack->charge()); }
+				hCharge[cent9]->Fill(picoTrack->charge()); 
 				
+			// dPt = pT_ThisBin_high - pT_ThisBin_low  -  for uneaven bins
 			dPt = ReturnBinWidth(edges, NBINS, picoTrack->pMom().Pt())
 			if(picoTrack->charge()>0) {
 				posYields = CentWeight* 1./((2.*3.14159) *(picoTrack->pMom().Pt())*dPt*dEta);
@@ -348,7 +353,6 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 // Removing pointers ------------------------------------------------------------------------------------------
 
 /*
-	l.Delete();
 	delete hNoCutRefMult;
 	delete hNoCutVertexZ;
 	delete hNoCutVertexXY;
