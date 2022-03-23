@@ -25,6 +25,16 @@ const Char_t *defaultOutFile="27GeV_spectra.root";
 
 using namespace std;
 
+Double_t ReturnBinWidth(Double_t* edges, Int_t N, Double_t content)
+{
+	Double_t x = 0;
+	for(Int_t i = 0; i < N+1; i++) {
+		if((content >= edges[i]) && (content>= edges[i+1])) x = edges[i+1] - edges[i];
+	}
+	return x;
+}
+
+
 int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.picoDst.root",   const Char_t *outFileName=defaultOutFile)
 {
 
@@ -73,6 +83,9 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 	TString hNeg_names[9];
 	TH1D *hNegSpectra[9];
 	
+	TH1D *hPosSpectraRebin[9];
+	TH1D *hNegSpectraRebin[9];
+	
 	TH1D *hPos60_80;
 	TH1D *hNeg60_80;
 	
@@ -104,7 +117,7 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 	hCutEta			= new TH1D("hCutEta","Eta distribution, no cuts",100, -1., 1.);
 	hCutGlobalPtOverPrimPt	= new TH2D("hCutGlobalPtOverPrimPt", "Global pT over primary pT, with cuts", 100, 0., 10., 100, 0., 10.);
 	
-		for(Int_t i = 0; i < 9; i++)
+	for(Int_t i = 0; i < 9; i++)
 	{
 		hPos_names[i] 	= "hPosSpectra_";
 		hPos_names[i]  += i;
@@ -113,9 +126,20 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 		hNeg_names[i]  += i;
 		hNegSpectra[i] 		= new TH1D(hNeg_names[i],"Neg d^{2}N/2piP_{T}dP_{T}deta distribution",NumBins, 0.01, 9.);
 	};
+	const Int_t NBINS = 59;
+	Double_t edges[NBINS + 1] = {0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9, 1.95, 2.0, 2.1, 2.2, 2.3, 2.4, 2.6, 2.8, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0};
+	for(Int_t i = 0; i < 9; i++)
+	{
+		hPos_names[i] 	= "hPosSpectra_";
+		hPos_names[i]  += i;
+		hPosSpectraRebin[i] 		= new TH1D(hPos_names[i],"Pos d^{2}N/2piP_{T}dP_{T}deta distribution",NBINS, edges);
+		hNeg_names[i] 	= "hNegSpectra_";
+		hNeg_names[i]  += i;
+		hNegSpectraRebin[i] 		= new TH1D(hNeg_names[i],"Neg d^{2}N/2piP_{T}dP_{T}deta distribution",NBINS, edges);
+	};
 	
-	hPos60_80 = new TH1D("hPos60_80", "Pos d^{2}N/2piP_{T}dP_{T}deta distribution", NumBins, 0.01, 9.);
-	hNeg60_80 = new TH1D("hNeg60_80", "Neg d^{2}N/2piP_{T}dP_{T}deta distribution", NumBins, 0.01, 9.);
+	hPos60_80 = new TH1D("hPos60_80", "Pos d^{2}N/2piP_{T}dP_{T}deta distribution", NBINS, edges);
+	hNeg60_80 = new TH1D("hNeg60_80", "Neg d^{2}N/2piP_{T}dP_{T}deta distribution", NBINS, edges);
 	
 
 // Drawing settings of histograms -----------------------------------------------------------------------------
@@ -256,36 +280,33 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 			if(picoTrack->charge()>0) {
 				posYields = CentWeight* 1./((2.*3.14159) *(picoTrack->pMom().Pt())*dPt*dEta);
 				hPosSpectra[cent9]-> Fill(picoTrack->pMom().Pt(), posYields);
-				hCharge->Fill(picoTrack->charge());
-				if(cent9<2) { hPos60_80->Fill(picoTrack->pMom().Pt(), posYields); }
+				if((cent9<2) || (cent9==8)) { hCharge->Fill(picoTrack->charge()); }
 			}
 			if(picoTrack->charge()<0) {
 				negYields = CentWeight* 1./((2.*3.14159) *(picoTrack->pMom().Pt())*dPt*dEta);
 				hNegSpectra[cent9]-> Fill(picoTrack->pMom().Pt(), negYields);
-				hCharge->Fill(picoTrack->charge());
-				if(cent9<2) { hNeg60_80->Fill(picoTrack->pMom().Pt(), negYields); }
+				if((cent9<2) || (cent9==8)) { hCharge->Fill(picoTrack->charge()); }
+				
+			dPt = ReturnBinWidth(edges, NBINS, picoTrack->pMom().Pt())
+			if(picoTrack->charge()>0) {
+				posYields = CentWeight* 1./((2.*3.14159) *(picoTrack->pMom().Pt())*dPt*dEta);
+				hPosSpectraRebin[cent9]-> Fill(picoTrack->pMom().Pt(), posYields);
+				if(cent9<2) { hPos60_80->Fill(picoTrack->pMom().Pt(), posYields); }
+			}
+			if(picoTrack->charge()<0) {
+				negYields = CentWeight* 1./((2.*3.14159) *(picoTrack->pMom().Pt())*dPt*dEta);
+				hNegSpectraRebin[cent9]-> Fill(picoTrack->pMom().Pt(), negYields);
+				if(cent9<2) { hNeg60_80->Fill(picoTrack->pMom().Pt(), negYields); }	
 			}
 		}	// end iTrack
 	} 		// end iEvent
 
-/* Normalization to the number of events with a certain centrality --------------------------------------------
-	for(Int_t j = 0; j < 9; j++) {
-		for(Int_t i = 0; i < hPosSpectra[j]->GetNbinsX(); i++) {
-			hPosSpectra[j]->SetBinContent(i, (hPosSpectra[j]->GetBinContent(i)/Norm[j]));
-			hPosSpectra[j]->SetBinError(i, (hPosSpectra[j]->GetBinError(i)/Norm[j]));
-			hNegSpectra[j]->SetBinContent(i, (hNegSpectra[j]->GetBinContent(i)/Norm[j]));
-			hNegSpectra[j]->SetBinError(i, (hNegSpectra[j]->GetBinError(i)/Norm[j]));
-		}
-	}
-*/
 // Saving histograms to a file --------------------------------------------------------------------------------
 	for(Int_t j = 0; j<9; j++) {   
-	/*
-		l.Add(hPosSpectra[j]); // l is an element of the TObjArray class 
-		l.Add(hNegSpectra[j]);
-	*/
-		hPosSpectra[j]	->Write();
-		hNegSpectra[j]	->Write();
+		hPosSpectra[j]		->Write();
+		hNegSpectra[j]		->Write();
+		hPosSpectraRebin[j]	->Write();
+		hNegSpectraRebin[j]	->Write();
 	}
 	
 //	l.Write();
