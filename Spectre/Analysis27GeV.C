@@ -29,7 +29,7 @@ Double_t ReturnBinWidth(Double_t* edges, Int_t N, Double_t content)
 {
 	Double_t x = 0;
 	for(Int_t i = 0; i < N+1; i++) {
-		if((content >= edges[i]) && (content>= edges[i+1])) x = edges[i+1] - edges[i];
+		if((content >= edges[i]) && (content<= edges[i+1])) x = edges[i+1] - edges[i];
 	}
 	return x;
 }
@@ -130,12 +130,12 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 	Double_t edges[NBINS + 1] = {0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9, 1.95, 2.0, 2.1, 2.2, 2.3, 2.4, 2.6, 2.8, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0};
 	for(Int_t i = 0; i < 9; i++)
 	{
-		hPos_names[i] 	= "hPosSpectra_";
+		hPos_names[i] 	= "hPosSpectraRebin_";
 		hPos_names[i]  += i;
-		hPosSpectraRebin[i] 		= new TH1D(hPos_names[i],"Pos d^{2}N/2piP_{T}dP_{T}deta distribution",NBINS, edges);
-		hNeg_names[i] 	= "hNegSpectra_";
+		hPosSpectraRebin[i] 		= new TH1D(hPos_names[i],"Pos d^{2}N/2piP_{T}dP_{T}deta distribution (uneaven bins)",NBINS, edges);
+		hNeg_names[i] 	= "hNegSpectraRebin_";
 		hNeg_names[i]  += i;
-		hNegSpectraRebin[i] 		= new TH1D(hNeg_names[i],"Neg d^{2}N/2piP_{T}dP_{T}deta distribution",NBINS, edges);
+		hNegSpectraRebin[i] 		= new TH1D(hNeg_names[i],"Neg d^{2}N/2piP_{T}dP_{T}deta distribution (uneaven bins)",NBINS, edges);
 	};
 	
 	hPos60_80 = new TH1D("hPos60_80", "Pos d^{2}N/2piP_{T}dP_{T}deta distribution", NBINS, edges);
@@ -276,6 +276,7 @@ int Analysis27GeV(const Char_t *inFile = "/star/data01/pwg/manukhov/27GeV/*.pico
 			hCutGlobalPtOverPrimPt->Fill(picoTrack->gMom().Pt(), picoTrack->pMom().Pt());
 // Filling pT spectra -----------------------------------------------------------------------------------------
 			dEta = 1;
+			// dPt = (pT_max-pT_min)/NumBins
 			dPt = (hPosSpectra[0]->GetBinCenter(hPosSpectra[0]->GetNbinsX()) - hPosSpectra[0]->GetBinCenter(0)) / hPosSpectra[0]->GetNbinsX();
 			if(picoTrack->charge()>0) {
 				posYields = CentWeight* 1./((2.*3.14159) *(picoTrack->pMom().Pt())*dPt*dEta);
